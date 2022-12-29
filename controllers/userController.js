@@ -4,7 +4,7 @@ const addUser = async (req, res, next) =>{
     try {
         const data = req.body;
         await db.collection("users")
-        .doc(data.userID)
+        .doc(data.UID)
         .set(data);
 
     res.send("User added succuessfully");
