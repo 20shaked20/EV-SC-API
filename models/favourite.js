@@ -1,3 +1,4 @@
+"use strict";
 class Favorite{
     constructor(SID, name, location) {
         this.SID = SID;
