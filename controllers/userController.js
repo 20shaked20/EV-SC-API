@@ -1,4 +1,4 @@
-const db = require('../db')
+const {auth, db} = require('../db')
 
 const addUser = async (req, res, next) =>{
     try {
@@ -78,10 +78,25 @@ const getFavoriteList = async (req, res, data) => {
     res.send(favorites);
 }
 
+const authUser = async (req, res, next) => {
+    const u_email = req.params.email.substring(1);
+    const u_pass = req.params.pass.substring(1);
+    try {
+        const user = await auth.signInWithEmailAndPassword(u_email, u_pass);
+        console.log(user.user.uid);
+        res.send("User Authenticated");
+
+      } catch (error) {
+        console.error(error);
+        res.send(error);
+      }
+    }
+
 module.exports = {
     addUser,
     getUser,
     getAllUsers,
     AddFavorite,
-    getFavoriteList
+    getFavoriteList,
+    authUser
 }
