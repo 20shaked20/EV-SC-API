@@ -14,14 +14,16 @@ const addStation = async (req, res, next) =>{
 }
 
 const getStation = async (req, res, next) => {
-    const sid = req.params.id 
+    const sid = req.params.id.substring(1);
+    console.log(sid);
     try {
-        const userData = await db 
-        .collection("users")
+        const stationData = await db 
+        .collection("stations")
         .doc(sid)
         .get();
 
-    res.send(userData.data());
+        console.log(stationData.data());
+    res.send(stationData.data());
     } catch (err) {
         res.status(400).send(err.message);
     }
@@ -29,7 +31,7 @@ const getStation = async (req, res, next) => {
 
 const updateStation = async (req, res, next) => {
     try {
-        const sid = req.params.id;
+        const sid = req.params.id.substring(1);
         const data = req.body;
         await db 
             .collection("stations")

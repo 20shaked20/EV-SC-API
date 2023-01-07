@@ -14,7 +14,7 @@ const addUser = async (req, res, next) =>{
 }
 
 const getUser = async (req, res, next) => {
-    const uid = req.params.id 
+    const uid = req.params.id.substring(1);
     try {
         const userData = await db 
         .collection("users")
