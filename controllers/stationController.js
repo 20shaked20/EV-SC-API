@@ -29,6 +29,19 @@ const getStation = async (req, res, next) => {
     }
 }
 
+const getAllStations = async (req, res, next) => {
+    try {
+      const stations = [];
+      const snapshot = await db.collection("stations").get();
+      snapshot.forEach((doc) => {
+        stations.push(doc.data());
+      });
+      res.send(stations);
+    } catch (err) {
+      res.status(400).send(err.message);
+    }
+  };
+
 const updateStation = async (req, res, next) => {
     try {
         const sid = req.params.id.substring(1);
@@ -53,8 +66,49 @@ const updateStation = async (req, res, next) => {
     }
 }
 
+const AddReview = async (req, res, next) =>{
+    const sid = req.params.id.substring(1);
+    try{
+        const data = req.body;
+        await db.collection("stations")
+        .doc(sid)
+        .collection("reviews")
+        .set(data)
+        res.send("Review added successfully");
+    }catch(err){
+        res.status(400).send(err.message);
+    }
+}
+
+const getReviewList = async (req, res, data) => {
+    const sid = req.params.id.substring(1);
+    let reviews = [];
+    await db
+    .collection("stations")
+    .doc(sid)
+    .collection("reviews")
+    .get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach((documentSnapshot) => {
+            const rating = documentSnapshot.data().Stars;
+            const uid = documentSnapshot.data().UID_user;
+            const review = documentSnapshot.data().Review;
+
+            reviews.push({ id:uid, value:rating, data:review });
+        });
+    })
+    .catch((err) => {
+        res.status(400).send('error while getting favorite stations: ${err.message}')
+    });
+    
+    res.send(reviews);
+}
+
 module.exports = {
     addStation,
     getStation,
-    updateStation
+    getAllStations,
+    updateStation,
+    AddReview,
+    getReviewList
 }
