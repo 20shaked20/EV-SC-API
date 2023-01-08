@@ -83,8 +83,13 @@ const authUser = async (req, res, next) => {
     const u_pass = req.params.pass.substring(1);
     try {
         const user = await auth.signInWithEmailAndPassword(u_email, u_pass);
-        console.log(user.user.uid);
-        res.send("User Authenticated");
+        const userData = await db 
+        .collection("users")
+        .doc(user.user.uid)
+        .get();
+        
+        console.log(userData.data());
+        res.send(userData.data());
 
       } catch (error) {
         console.error(error);
