@@ -3,9 +3,23 @@ const {auth, db} = require('../db')
 const addUser = async (req, res, next) =>{
     try {
         const data = req.body;
-        await db.collection("users")
-        .doc(data.UID)
-        .set(data);
+        console.log(req.body);
+        const authResponse = await auth.createUserWithEmailAndPassword(data.email,data.pass);
+        if(authResponse != null){
+            const uid = auth.currentUser.uid;
+            const newUser = {
+                FirstName: data.FirstName,
+                LastName: data.LastName,
+                Permission: data.Permission,
+                Phone: data.Phone,
+                UID: uid,
+                UserName: data.UserName
+            };
+            await db.collection("users")
+            .doc(uid)
+            .set(newUser);
+        }
+        
 
     res.send("User added succuessfully");
     } catch (err) {
