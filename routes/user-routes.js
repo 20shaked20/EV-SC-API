@@ -5,7 +5,8 @@ const {
     getAllUsers,
     AddFavorite,
     getFavoriteList,
-    authUser
+    authUser,
+    Logout
 } = require('../controllers/userController');
 
 const router = express.Router();
@@ -16,6 +17,7 @@ router.get('/users', getAllUsers);
 router.post('/user/:id/favorite',AddFavorite);
 router.get('/user/:id/favorites', getFavoriteList);
 router.get('/user/auth/:email/:pass', authUser);
+router.get('/user/logout', Logout);
 
 
 module.exports = {

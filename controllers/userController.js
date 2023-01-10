@@ -1,11 +1,11 @@
-const {auth, db} = require('../db')
+const { auth, db } = require('../db')
 
-const addUser = async (req, res, next) =>{
+const addUser = async (req, res, next) => {
     try {
         const data = req.body;
         console.log(req.body);
-        const authResponse = await auth.createUserWithEmailAndPassword(data.email,data.pass);
-        if(authResponse != null){
+        const authResponse = await auth.createUserWithEmailAndPassword(data.email, data.pass);
+        if (authResponse != null) {
             const uid = auth.currentUser.uid;
             const newUser = {
                 FirstName: data.FirstName,
@@ -16,12 +16,12 @@ const addUser = async (req, res, next) =>{
                 UserName: data.UserName
             };
             await db.collection("users")
-            .doc(uid)
-            .set(newUser);
+                .doc(uid)
+                .set(newUser);
         }
-        
 
-    res.send("User added succuessfully");
+
+        res.send("User added succuessfully");
     } catch (err) {
         res.status(400).send(err.message);
     }
@@ -30,12 +30,12 @@ const addUser = async (req, res, next) =>{
 const getUser = async (req, res, next) => {
     const uid = req.params.id.substring(1);
     try {
-        const userData = await db 
-        .collection("users")
-        .doc(uid)
-        .get();
+        const userData = await db
+            .collection("users")
+            .doc(uid)
+            .get();
 
-    res.send(userData.data());
+        res.send(userData.data());
     } catch (err) {
         res.status(400).send(err.message);
     }
@@ -43,27 +43,29 @@ const getUser = async (req, res, next) => {
 
 const getAllUsers = async (req, res, next) => {
     try {
-      const users = [];
-      const snapshot = await db.collection("users").get();
-      snapshot.forEach((doc) => {
-        users.push(doc.data());
-      });
-      res.send(users);
+        const users = [];
+        const snapshot = await db.collection("users").get();
+        snapshot.forEach((doc) => {
+            users.push(doc.data());
+        });
+        res.send(users);
     } catch (err) {
-      res.status(400).send(err.message);
+        res.status(400).send(err.message);
     }
-  };
+};
 
-  const AddFavorite = async (req, res, next) =>{
+const AddFavorite = async (req, res, next) => {
     const uid = req.params.id.substring(1);
-    try{
+    console.log(uid)
+    try {
         const data = req.body;
         await db.collection("users")
-        .doc(uid)
-        .collection("favorites")
-        .set(data)
+            .doc(uid)
+            .collection("favorites")
+            .doc()
+            .set(data)
         res.send("Favorite station added successfully");
-    }catch(err){
+    } catch (err) {
         res.status(400).send(err.message);
     }
 }
@@ -72,23 +74,23 @@ const getFavoriteList = async (req, res, data) => {
     const uid = req.params.id.substring(1);
     let favorites = [];
     await db
-    .collection("users")
-    .doc(uid)
-    .collection("favorites")
-    .get()
-    .then((querySnapshot) => {
-        querySnapshot.forEach((documentSnapshot) => {
-            const name = documentSnapshot.data().Station;
-            const sid = documentSnapshot.data().SID;
-            const location = documentSnapshot.data().Location;
+        .collection("users")
+        .doc(uid)
+        .collection("favorites")
+        .get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((documentSnapshot) => {
+                const name = documentSnapshot.data().Station;
+                const sid = documentSnapshot.data().SID;
+                const location = documentSnapshot.data().Location;
 
-            favorites.push({ label:name, value:sid, loc:location });
+                favorites.push({ Location: location, SID: sid, Station: name });
+            });
+        })
+        .catch((err) => {
+            res.status(400).send(err.message)
         });
-    })
-    .catch((err) => {
-        res.status(400).send(err.message)
-    });
-    
+
     res.send(favorites);
 }
 
@@ -97,19 +99,34 @@ const authUser = async (req, res, next) => {
     const u_pass = req.params.pass.substring(1);
     try {
         const user = await auth.signInWithEmailAndPassword(u_email, u_pass);
-        const userData = await db 
-        .collection("users")
-        .doc(user.user.uid)
-        .get();
-        
+        const userData = await db
+            .collection("users")
+            .doc(user.user.uid)
+            .get();
+
         console.log(userData.data());
         res.send(userData.data());
 
-      } catch (error) {
+    } catch (error) {
         console.error(error);
         res.send(error);
-      }
     }
+}
+
+const Logout = async (req, res, next) => {
+    try {
+        const user = auth.currentUser;
+        if (user) {
+            await auth.signOut();
+            res.status(200).send("User Signed Out Successfully");
+        } else {
+            res.status(401).send("No user is signed in.");
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send(error);
+    }
+}
 
 module.exports = {
     addUser,
@@ -117,5 +134,6 @@ module.exports = {
     getAllUsers,
     AddFavorite,
     getFavoriteList,
-    authUser
+    authUser,
+    Logout
 }

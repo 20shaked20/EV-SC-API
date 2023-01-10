@@ -1,4 +1,4 @@
-const db = require('../db')
+const {auth,db} = require('../db')
 
 const addStation = async (req, res, next) =>{
     try {
@@ -44,19 +44,21 @@ const getAllStations = async (req, res, next) => {
 
 const updateStation = async (req, res, next) => {
     try {
+        console.log("Updating station : "+ req.params.id);
         const sid = req.params.id.substring(1);
         const data = req.body;
         await db 
             .collection("stations")
             .doc(sid)
             .update({
-                station_name : data.station_name,
-                avg_grade : data.avg_grade,
-                station_address: data.station_address,
-                location: data.location,
-                charghing_stations: data.charghing_stations,
-                sumOf_reviews: data.sumOf_reviews
-                // SID is not updated as we don't expect it to change
+                Address: data.Address,
+                AverageRating: data.AverageRating,
+                ChargingStations: data.ChargingStations,
+                Location: data.Location,
+                Name: data.Name,
+                SID: data.SID,
+                SumOf_reviews: data.SumOf_reviews
+                
             })
             .then(() => {
                 res.send("Station with ID of " + sid + "updated in database succuess");
@@ -73,6 +75,7 @@ const AddReview = async (req, res, next) =>{
         await db.collection("stations")
         .doc(sid)
         .collection("reviews")
+        .doc()
         .set(data)
         res.send("Review added successfully");
     }catch(err){
