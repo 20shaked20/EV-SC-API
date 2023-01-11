@@ -115,13 +115,8 @@ const authUser = async (req, res, next) => {
 
 const Logout = async (req, res, next) => {
     try {
-        const user = auth.currentUser;
-        if (user) {
-            await auth.signOut();
-            res.status(200).send("User Signed Out Successfully");
-        } else {
-            res.status(401).send("No user is signed in.");
-        }
+        await auth.signOut();
+        res.send("User Signed Out Successfully");
     } catch (error) {
         console.error(error);
         res.status(500).send(error);

@@ -3,9 +3,19 @@ const {auth,db} = require('../db')
 const addStation = async (req, res, next) =>{
     try {
         const data = req.body;
+        console.log(req.body);
+        const newStation = {
+            Address: data.Address,
+            AverageRating: data.AverageRating,
+            ChargingStations: data.ChargingStations,
+            Location: data.Location,
+            Name: data.Name,
+            SID: data.SID,
+            SumOf_reviews: data.SumOf_reviews
+        };
         await db.collection("stations")
-        .doc(data.SID)
-        .set(data);
+            .doc(data.SID)
+            .set(newStation);
 
     res.send("Station added succuessfully");
     } catch (err) {
@@ -44,8 +54,8 @@ const getAllStations = async (req, res, next) => {
 
 const updateStation = async (req, res, next) => {
     try {
-        console.log("Updating station : "+ req.params.id);
         const sid = req.params.id.substring(1);
+        console.log("Updating station: "+ req.params.id);
         const data = req.body;
         await db 
             .collection("stations")
@@ -107,11 +117,29 @@ const getReviewList = async (req, res, data) => {
     res.send(reviews);
 }
 
+const deleteStation = async (req, res, data) => {
+    const sid = req.params.id.substring(1);
+    console.log("Remove station -> "+ sid);
+    try{
+        const remove = await db
+            .collection("stations")
+            .doc(sid)
+            .delete();
+
+        res.send("Station with ID of " + sid + "removed from database ");
+
+    } catch(err){
+        res.status(400).send('error while trying to delete station');
+    }
+
+}
+
 module.exports = {
     addStation,
     getStation,
     getAllStations,
     updateStation,
     AddReview,
-    getReviewList
+    getReviewList,
+    deleteStation
 }
