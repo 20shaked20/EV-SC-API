@@ -123,6 +123,18 @@ const Logout = async (req, res, next) => {
     }
 }
 
+const resetPass = async (req, res, next) => {
+    const u_email = req.params.email.substring(1);
+    try{
+        await auth.sendPasswordResetEmail(u_email);
+        console.log("Sending email password reset for email: " + u_email);
+        res.status(200).send("Password reset sent to email");
+    }catch (error) {
+        console.error(error);
+        res.status(500).send(error);
+    }
+}
+
 module.exports = {
     addUser,
     getUser,
@@ -130,5 +142,6 @@ module.exports = {
     AddFavorite,
     getFavoriteList,
     authUser,
-    Logout
+    Logout,
+    resetPass
 }
