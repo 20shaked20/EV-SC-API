@@ -8,6 +8,7 @@ const {
     authUser,
     Logout,
     resetPass
+    // uploadProfileIMG
 } = require('../controllers/userController');
 
 const router = express.Router();
@@ -20,6 +21,7 @@ router.get('/user/:id/favorites', getFavoriteList);
 router.get('/user/auth/:email/:pass', authUser);
 router.get('/user/logout', Logout);
 router.get('/user/reset/:email', resetPass);
+// router.post('/user/uploadProfileIMG', uploadProfileIMG);
 
 
 module.exports = {

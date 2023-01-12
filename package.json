@@ -6,24 +6,22 @@
   "scripts": {
     "start": "nodemon index.js"
   },
-
   "repository": {
     "type": "git",
     "url": "git+https://github.com/20shaked20/EV-SC-API.git"
   },
-
-  "author":"",
+  "author": "",
   "license": "BSL-1.0",
   "bugs": {
     "url": "https://github.com/20shaked20/EV-SC-API/issues"
   },
-
   "dependencies": {
     "body-parser": "^1.20.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "firebase": "^8.10.1",
+    "multer": "^1.4.5-lts.1",
     "nodemon": "^2.0.20"
   }
 }

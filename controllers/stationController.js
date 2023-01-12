@@ -1,4 +1,4 @@
-const {auth,db} = require('../db')
+const {auth,db, storage} = require('../db')
 
 const addStation = async (req, res, next) =>{
     try {

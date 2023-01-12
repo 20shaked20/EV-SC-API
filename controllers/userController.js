@@ -1,4 +1,4 @@
-const { auth, db } = require('../db')
+const { auth, db, storage } = require('../db')
 
 const addUser = async (req, res, next) => {
     try {
@@ -135,6 +135,19 @@ const resetPass = async (req, res, next) => {
     }
 }
 
+// const uploadProfileIMG = async (req, res, next) => {
+//     try{
+//         const fileRef = storage.ref("users/" + auth.uid + "profile_pic.png");
+//         const imageBuffer = Buffer.from(req.body.image, "base64");
+
+//         await fileRef.put(imageBuffer);
+//         res.send("Image added successfully to database storage");
+//     }catch (error) {
+//         console.error(error);
+//         res.status(500).send(error);
+//     }
+// }
+
 module.exports = {
     addUser,
     getUser,
@@ -144,4 +157,5 @@ module.exports = {
     authUser,
     Logout,
     resetPass
+    // uploadProfileIMG
 }
